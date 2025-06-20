@@ -5,20 +5,24 @@ int main(void) {
     int response;
     socketif_t socket;
     char hostAddress[MAXADDRESSLEN];
-    int port;
+    int clientPort;
+    int localport = 35000;
+    int cont = 0; // richieste soddisfatte
+
+    socket = createUDPInterface(localport);
     
-    socket = createUDPInterface(35000);
+    do{
+        printf("[SERVER] Sono in attesa di richieste da qualche client\n");
+
+        UDPReceive(socket, &request, sizeof(request), hostAddress, &clientPort);
+
+        printf("[SERVER] Ho ricevuto un messaggio da host/porta %s/%d\n", hostAddress, clientPort);
+        
+        printf("[SERVER] Contenuto: %d\n", request);
+        
+        response += request;;
+    }while(request != 0);
     
-    printf("[SERVER] Sono in attesa di richieste da qualche client\n");
-    
-    UDPReceive(socket, &request, sizeof(request), hostAddress, &port);
-    
-    printf("[SERVER] Ho ricevuto un messaggio da host/porta %s/%d\n", hostAddress, port);
-    
-    printf("[SERVER] Contenuto: %d\n", request);
-    
-    response = request + 1;
-    
-    UDPSend(socket, &response, sizeof(response), hostAddress, port);
+    UDPSend(socket, &response, sizeof(response), hostAddress, clientPort);
 }
 
