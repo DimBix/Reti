@@ -23,18 +23,31 @@ int main(){
         while(request[0]!='\r') {
             fgets(request, sizeof(request), connfd);
             printf("%s", request);
-            if(strstr(request, "Content-Length:")!=NULL)  {
+            if(strstr(request, "Content-Length:")!= NULL)  {
                 length = atol(request+15);
-                //printf("length %ld\n", length);
             }
         }
         
         if(strcmp(method, "POST")==0)  {
-            file = fopen("uploaded_file.txt", "a+");
-            for(i=0; i<length; i++)  {
-                c = fgetc(connfd);
-                fputc(c, file);
-            }
+            fread(request, 1, length, connfd);
+            request[length] = '\0';
+
+            char *filename = NULL;
+            char *contenuto = NULL;
+
+            char *tokenName = strtok(request, "&");
+            char *tokenFile = strtok(NULL, "&");
+
+            char *key = strtok(tokenName, "=");
+            char *value = strtok(NULL, "=");
+            filename = strdup(value);
+            
+            key = strtok(tokenFile, "=");
+            value = strtok(NULL, "=");
+            contenuto = strdup(value);
+            
+            file = fopen(filename, "a+");
+            fputs(contenuto, file);
             fclose(file);
         }
         
