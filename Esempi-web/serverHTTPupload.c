@@ -7,6 +7,7 @@ int main(){
     int res, i;
     long length=0;
     char request[MTU], method[10], c;
+    char boundary[MTU];
     
     sockfd = createTCPServer(8000);
     if (sockfd < 0){
@@ -23,29 +24,42 @@ int main(){
         while(request[0]!='\r') {
             fgets(request, sizeof(request), connfd);
             printf("%s", request);
+            if(strstr(request, "boundary=") != NULL) {
+                char *boundary_start = strstr(request, "boundary=") + strlen("boundary=");
+                strcpy(boundary, strtok(boundary_start, "\r\n"));
+            }
+
             if(strstr(request, "Content-Length:")!= NULL)  {
                 length = atol(request+15);
             }
         }
+
         
         if(strcmp(method, "POST")==0)  {
+            char request[1000];
             fread(request, 1, length, connfd);
             request[length] = '\0';
 
             char *filename = NULL;
-            char *contenuto = NULL;
+            char *token = NULL;
+            token = malloc(strlen(request));
 
-            char *tokenName = strtok(request, "&");
-            char *tokenFile = strtok(NULL, "&");
+            strcpy(token, request);
 
-            char *key = strtok(tokenName, "=");
-            char *value = strtok(NULL, "=");
-            filename = strdup(value);
+            strtok(token, "\"");
+            strtok(NULL, "\"");
+            strtok(NULL, "\"");  
+            filename = strtok(NULL, "\"");
+            free(token);
+
             
-            key = strtok(tokenFile, "=");
-            value = strtok(NULL, "=");
-            contenuto = strdup(value);
-            
+            char *start = strstr(request, "Content-Type:") + strlen("Content-Type:");
+            start = strstr(start, "\r\n\r\n") + 4;
+            char *end = strstr(start, boundary);
+            char *contenuto;
+            int len = end - start;
+            strncpy(contenuto, start, len - 5);
+
             file = fopen(filename, "a+");
             fputs(contenuto, file);
             fclose(file);

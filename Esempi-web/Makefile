@@ -7,12 +7,12 @@ CC = gcc
 CFLAGS = -lpthread
 
 # Source files for server
-SERVER_SRCS = network.c serverHTTPloader.c
+SERVER_SRCS = network.c serverHTTPupload.c
 # Source files for client
 CLIENT_SRCS = network.c serverHTTP-CGI.c
 
 # Output executables
-SERVER_TARGET = serverHTTPloader
+SERVER_TARGET = serverHTTPupload
 CLIENT_TARGET = serverHTTP-CGI
 
 # Default target
