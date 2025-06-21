@@ -9,11 +9,11 @@ CFLAGS = -lpthread
 # Source files for server
 SERVER_SRCS = network.c serverHTTPloader.c
 # Source files for client
-CLIENT_SRCS = network.c serverHTTPupload.c
+CLIENT_SRCS = network.c serverHTTP-CGI.c
 
 # Output executables
 SERVER_TARGET = serverHTTPloader
-CLIENT_TARGET = serverHTTPupload
+CLIENT_TARGET = serverHTTP-CGI
 
 # Default target
 all: $(SERVER_TARGET) $(CLIENT_TARGET)
