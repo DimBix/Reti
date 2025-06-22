@@ -34,9 +34,9 @@ int main(){
             }
         }
 
-        
+
         if(strcmp(method, "POST")==0)  {
-            char request[1000];
+            char request[MTU];
             fread(request, 1, length, connfd);
             request[length] = '\0';
 
@@ -52,13 +52,15 @@ int main(){
             filename = strtok(NULL, "\"");
             free(token);
 
-            
+
             char *start = strstr(request, "Content-Type:") + strlen("Content-Type:");
             start = strstr(start, "\r\n\r\n") + 4;
             char *end = strstr(start, boundary);
-            char *contenuto;
+            end -= 4; // rimuove i carattrei \r\n\r\n--
             int len = end - start;
-            strncpy(contenuto, start, len - 5);
+            char contenuto[len + 1];
+            strncpy(contenuto, start, len);
+            contenuto[len] = '\0';
 
             file = fopen(filename, "a+");
             fputs(contenuto, file);

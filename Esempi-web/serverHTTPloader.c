@@ -14,7 +14,7 @@ int main(){
         return -1;
     }
     
-    while(true) {
+    
         connfd = acceptConnectionFD(sockfd);
         
         fgets(request, sizeof(request), connfd);
@@ -52,7 +52,7 @@ int main(){
         fclose(connfd);
                 
         printf("\n\n[SERVER] sessione HTTP completata\n\n");
-    }
+    
     
     closeConnection(sockfd);
     return 0;

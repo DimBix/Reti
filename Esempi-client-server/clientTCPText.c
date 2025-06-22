@@ -7,7 +7,7 @@ int main(){
     char request[40];
     FILE *file;
     int fd;
-    char character = 'a';
+    char character = 'a', *filename;
     
     connection = createTCPConnection("localhost", 35000);
     
@@ -18,15 +18,21 @@ int main(){
     printf("[CLIENT] Invio richiesta con nome file al server\n");
     TCPSend(connection, &request, sizeof(request));
 
-    file = fopen("/home/Dimitri/testo.txt", "w");
+    filename = strrchr(request, '/');
+    filename++;
+
+    file = fopen(filename, "a+");    
     if (file == NULL){
-        printf("Errore apertura file %s \n", "/home/Dimitri/testo.txt");
+        printf("Errore apertura file %s \n", request);
         exit(0);
     }
 
-   while (TCPReceive(connection, &character, sizeof(character)) > 0) {
+    do{
+        TCPReceive(connection, &character, sizeof(character));
+        if(character < 0)
+            break;
         fputc(character, file);
-    }
+    }while(true);
 
     printf("[CLIENT] Ho ricevuto il file dal server.\n");
     printf("[CLIENT] Chiudo la connessione.\n");

@@ -22,6 +22,7 @@ int main(){
     TCPReceive(connection, &receive, sizeof(receive) - 1);
     printf("[SERVER] Ho ricevuto il nome del file: %s\n", receive);
 
+
     file = fopen(receive, "r");
     if (file == NULL){
         printf("Errore apertura file %s \n", receive);
@@ -32,7 +33,7 @@ int main(){
     do{
         character = fgetc(file);
         TCPSend(connection, &character, sizeof(character));
-    }while(character != EOF);
+    }while(character > 0);
 
     printf("[SERVER] Ho inviato il file al client.\n");
     printf("[SERVER] Chiudo la connessione.\n");
