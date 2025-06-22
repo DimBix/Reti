@@ -6,7 +6,7 @@ var socket = require('socket.io');
 
 //Chat setup
 var app = express();
-// in questo momento il server è in attesa delle connessioni HTTP sulla porta 4000
+// in questo momento il server è in attesa delle connessioni HTTP sulla porta 80
 var server = app.listen(4000, function(){
    console.log('waiting for HTTP requests on port 4000,');
 });
@@ -31,8 +31,12 @@ io.on('connection', function(webSocket){
    console.log('made webSocket connection', webSocket.id);
 
    // Ricezione di un messaggio da inoltrare ai client
-   webSocket.on('message', function(data){
-       io.sockets.emit('UploadChat', data);
+   webSocket.on('messaggio', function(data){
+       io.sockets.emit('aggiornamento', data);
+   });
+
+   webSocket.on('typing', function(data){
+       io.sockets.emit('typing', data);
    });
 });
 
