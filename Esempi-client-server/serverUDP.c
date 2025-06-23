@@ -11,6 +11,7 @@ int main(void) {
 
     socket = createUDPInterface(localport);
     
+    //true
     while(cont < 5) {
     
         printf("[SERVER] Sono in attesa di richieste da qualche client\n");
