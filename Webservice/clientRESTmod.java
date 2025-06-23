@@ -5,24 +5,24 @@ import java.util.List;
 
 class ClientREST {
     public static void main(String args[]) {
-        RESTAPImod service = new RESTAPImod("127.0.0.1");
+        RESTAPI service1 = new RESTAPI("127.0.0.1");
 
         if (args.length < 3) {
             System.out.println("USAGE: java ClientREST tipofunzione op1 op2");
         } else if (args[0].equals("calcola-somma")) {
             System.out.println(
-                    "Risultato: " + service.calcolaSomma(Float.parseFloat(args[1]), Float.parseFloat(args[2])));
+                    "Risultato: " + service1.calcolaSomma(Float.parseFloat(args[1]), Float.parseFloat(args[2])));
         } else if (args[0].equals("calcola-num-primi")) {
             System.out.println(
-                    "Risultato: " + service.calcolaPrimi(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
+                    "Risultato: " + service1.calcolaPrimi(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
         }
     }
 }
 
-class RESTAPImod {
+class RESTAPI {
     String server;
 
-    RESTAPImod(String remoteServer) {
+    RESTAPI(String remoteServer) {
         server = new String(remoteServer);
     }
 
@@ -54,7 +54,7 @@ class RESTAPImod {
             System.out.println(e.getMessage());
         }
 
-        return risultato;
+        return (float) risultato;
     }
 
     List<Integer> calcolaPrimi(int val1, int val2) {
@@ -70,20 +70,18 @@ class RESTAPImod {
         }
 
         try {
-            URLConnection conn = u.openConnection();
-            conn.connect();
-            BufferedReader buffer = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-
-            System.out.println("[CLIENT] Lettura dei numeri primi");
-            String string;
-            while ((string = buffer.readLine()) != null) {
-                System.out.println(string);
-                if ((i = string.indexOf("primi")) != -1) {
-                    risultato.add(Integer.parseInt(string.substring(i + 7)));
+            URLConnection c = u.openConnection();
+            c.connect();
+            BufferedReader b = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            System.out.println("Lettura dei dati...");
+            String s;
+            while ((s = b.readLine()) != null) {
+                System.out.println(s);
+                if ((i = s.indexOf("primi")) != -1) {
+                    risultato.add(Integer.parseInt(s.substring(i + 7)));
                 }
                 try {
-                    risultato.add(Integer.parseInt(string));
+                    risultato.add(Integer.parseInt(s));
                 } catch (Exception e) {
                 }
             }

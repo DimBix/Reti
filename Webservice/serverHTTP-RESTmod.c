@@ -4,11 +4,10 @@ float calcolaSomma(float val1, float val2) {
     return (val1 + val2);
 }
 
-char* calcolaPrimi(int val1, int val2) {
+char* calcolaPrimi(int a, int b) {
     bool flag;
-    int a = val1;
-    int b = val2;
-    char* result = malloc(val2);
+
+    char* result = malloc(b);
 
     for (int i = a; i <= b; i++) {
         if (i == 1 || i == 0)
@@ -37,7 +36,6 @@ char* calcolaPrimi(int val1, int val2) {
 int main() {
     socketif_t sockfd;
     FILE* connfd;
-    int res, i;
     long length = 0;
     char request[MTU], url[MTU], method[10], c;
 
@@ -49,6 +47,7 @@ int main() {
 
     while (true) {
         connfd = acceptConnectionFD(sockfd);
+
         fgets(request, sizeof(request), connfd);
         strcpy(method, strtok(request, " "));
         strcpy(url, strtok(NULL, " "));
@@ -60,16 +59,17 @@ int main() {
         }
 
         if (strcmp(method, "POST") == 0) {
-            for (i = 0; i < length; i++) {
+            for (int i = 0; i < length; i++) {
                 c = fgetc(connfd);
             }
         }
 
-        if (strstr(url, "calcola-somma") == NULL) {
-            if (strstr(url, "calcola-num-primi") == NULL) {
+        if (strstr(url, "calcola-somma") == NULL)
+            if (strstr(url, "calcola-num-primi") == NULL)
                 fprintf(connfd, "HTTP/1.1 200 OK\r\n\r\n{\r\n Funzione non riconosciuta!\r\n}\r\n");
-            } else {
-                printf("[SERVER] chiamata funzione calcolo numeri primi\n");
+            else {
+                printf("Chiamata a funzione numero primo\n");
+
                 char* function, *op1, *op2;
                 int val1, val2;
 
@@ -81,33 +81,36 @@ int main() {
                 strtok(op2, "=");
                 val2 = atof(strtok(NULL, "="));
 
-                char* primi = calcolaPrimi(val1, val2);
+                char* primi;
 
-                fprintf(connfd, "HTTP/1.1 200 OK\r\n\r\n{\r\n \"numeri primi\": %s\r\n}\r\n", primi);
+                primi = calcolaPrimi(val1, val2);
+
+                fprintf(connfd, "HTTP/1.1 200 OK\r\n\r\n{\r\n \"numeri primi\":%s\r\n}\r\n", primi);
+
                 free(primi);
             }
-        } else {
-           
-            char *function, *op1, *op2;
+        else {
+            printf("Chiamata a funzione sommatrice\n");
+
+            char* function, *op1, *op2;
             float somma, val1, val2;
-   
-            // skeleton: decodifica (de-serializzazione) dei parametri
+
             function = strtok(url, "?&");
             op1 = strtok(NULL, "?&");
             op2 = strtok(NULL, "?&");
-            strtok(op1,"=");
-            val1 = atof(strtok(NULL,"="));
-            strtok(op2,"=");
-            val2 = atof(strtok(NULL,"="));
-            
-            // chiamata alla business logic
+            strtok(op1, "=");
+            val1 = atof(strtok(NULL, "="));
+            strtok(op2, "=");
+            val2 = atof(strtok(NULL, "="));
+
             somma = calcolaSomma(val1, val2);
-            
-            // skeleton: codifica (serializzazione) del risultato
-            fprintf(connfd,"HTTP/1.1 200 OK\r\n\r\n{\r\n    \"somma\":%f\r\n}\r\n", somma);
+            printf("Somma: %f\n", somma);
+
+            fprintf(connfd, "HTTP/1.1 200 OK\r\n\r\n{\r\n \"somma\":%f\r\n}\r\n");
         }
 
         fclose(connfd);
+
         printf("\n\n[SERVER] sessione HTTP completata\n\n");
     }
 
