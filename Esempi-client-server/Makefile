@@ -7,9 +7,9 @@ CC = gcc
 CFLAGS = -lpthread
 
 # Source files for server
-SERVER_SRCS = network.c serverUDP_inc.c
+SERVER_SRCS = network.c serverTCPText.c
 # Source files for client
-CLIENT_SRCS = network.c clientUDP_inc.c
+CLIENT_SRCS = network.c clientTCPText.c
 
 # Output executables
 SERVER_TARGET = serverTCP
